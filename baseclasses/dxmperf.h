@@ -6,7 +6,6 @@
 // Copyright (c) 1992-2001 Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
-
 #ifndef _DXMPERF_H_
 #define _DXMPERF_H_
 
@@ -14,34 +13,33 @@
 #include "perflog.h"
 
 #ifdef _IA64_
-extern "C" unsigned __int64 __getReg( int whichReg );
+extern "C" unsigned __int64 __getReg(int whichReg);
 #pragma intrinsic(__getReg)
 #endif // _IA64_
 
-
-inline ULONGLONG _RDTSC( void ) {
+inline ULONGLONG _RDTSC(void) {
 #ifdef _X86_
-    LARGE_INTEGER   li;
-    __asm {
-        _emit   0x0F
-        _emit   0x31
-        mov li.LowPart,eax
-        mov li.HighPart,edx
-    }
-    return li.QuadPart;
+  LARGE_INTEGER   li;
+  __asm {
+    _emit   0x0F
+    _emit   0x31
+    mov li.LowPart, eax
+    mov li.HighPart, edx
+  }
+  return li.QuadPart;
 
 #if 0 // This isn't tested yet
 
 #elif defined (_IA64_)
 
 #define INL_REGID_APITC 3116
-    return __getReg( INL_REGID_APITC );
+  return __getReg(INL_REGID_APITC);
 
 #endif // 0
 
 #else // unsupported platform
-    // not implemented on non x86/IA64 platforms
-    return 0;
+  // not implemented on non x86/IA64 platforms
+  return 0;
 #endif // _X86_/_IA64_
 }
 
@@ -217,34 +215,32 @@ inline ULONGLONG _RDTSC( void ) {
         PerflogTraceEvent ((PEVENT_TRACE_HEADER) &perfData); \
     } \
 
-
 inline
 VOID PERFLOG_STREAMTRACE(
-    ULONG Level,
-    ULONG Id,
-    ULONGLONG DShowClock,
-    ULONGLONG Data1,
-    ULONGLONG Data2,
-    ULONGLONG Data3,
-    ULONGLONG Data4
-    )
+  ULONG Level,
+  ULONG Id,
+  ULONGLONG DShowClock,
+  ULONGLONG Data1,
+  ULONGLONG Data2,
+  ULONGLONG Data3,
+  ULONGLONG Data4
+)
 {
-    if (Level <= PerflogModuleLevel)
-    {
-        PERFINFO_WMI_STREAMTRACE perfData;
-        memset( &perfData, 0, sizeof( perfData ) );
-        perfData.header.Size = sizeof( perfData );
-        perfData.header.Flags = WNODE_FLAG_TRACED_GUID;
-        perfData.header.Guid = GUID_STREAMTRACE;
-        perfData.data.dshowClock = DShowClock;
-        perfData.data.id = Id;
-        perfData.data.data[0] = Data1;
-        perfData.data.data[1] = Data2;
-        perfData.data.data[2] = Data3;
-        perfData.data.data[3] = Data4;
-        PerflogTraceEvent((PEVENT_TRACE_HEADER) &perfData);
-    }
+  if (Level <= PerflogModuleLevel)
+  {
+    PERFINFO_WMI_STREAMTRACE perfData;
+    memset(&perfData, 0, sizeof(perfData));
+    perfData.header.Size = sizeof(perfData);
+    perfData.header.Flags = WNODE_FLAG_TRACED_GUID;
+    perfData.header.Guid = GUID_STREAMTRACE;
+    perfData.data.dshowClock = DShowClock;
+    perfData.data.id = Id;
+    perfData.data.data[0] = Data1;
+    perfData.data.data[1] = Data2;
+    perfData.data.data[2] = Data3;
+    perfData.data.data[3] = Data4;
+    PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);
+  }
 }
-
 
 #endif // _DXMPERF_H_

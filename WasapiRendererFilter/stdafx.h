@@ -5,7 +5,6 @@
 
 #pragma once
 
-
 //#include "targetver.h"
 #define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES 1
 #include <new>
@@ -24,23 +23,21 @@
 class IMediaBufferEx : public IMediaBuffer
 {
 public:
-	//virtual HRESULT STDMETHODCALLTYPE SetSampleTimes(REFERENCE_TIME rtStart, REFERENCE_TIME rtEnd) = 0;
+  //virtual HRESULT STDMETHODCALLTYPE SetSampleTimes(REFERENCE_TIME rtStart, REFERENCE_TIME rtEnd) = 0;
 
-	virtual REFERENCE_TIME STDMETHODCALLTYPE GetStartTime() = 0;
-	virtual REFERENCE_TIME STDMETHODCALLTYPE GetEndTime() = 0;
-        
+  virtual REFERENCE_TIME STDMETHODCALLTYPE GetStartTime() = 0;
+  virtual REFERENCE_TIME STDMETHODCALLTYPE GetEndTime() = 0;
 };
 
 //extern bool DisableMMCSS;
 
 template <class T> void SafeRelease(T **ppT)
 {
-    if (*ppT)
-    {
-        (*ppT)->Release();
-        *ppT = NULL;
-    }
+  if (*ppT)
+  {
+    (*ppT)->Release();
+    *ppT = NULL;
+  }
 }
 
 void DebugPrintf(const wchar_t *str, ...);
-

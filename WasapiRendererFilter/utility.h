@@ -1,185 +1,184 @@
 /*--
- 
+
 Copyright (C) Microsoft Corporation
- 
+
 Module Name:
- 
+
     Utility.h
- 
+
 Abstract:
- 
+
     Declarations of various utility functions.
- 
+
 Notes:
- 
+
 Revision History:
- 
+
 --*/
- 
+
 #pragma once
- 
+
 #include "stdafx.h"
- 
+
 #define NELEMENTS(x) (sizeof (x) / sizeof (*(x)))
- 
+
 // Overload '<' operator on GUIDs. This is required for defining
 // map<GUID, IUnknown *> type.
- 
+
 inline bool operator<(const GUID &rguid1, const GUID &rguid2) {
-    return (memcmp((void *)&rguid1, (void *)&rguid2, sizeof(GUID)) < 0);
+  return (memcmp((void *)&rguid1, (void *)&rguid2, sizeof(GUID)) < 0);
 }
- 
+
 template<class T> inline void
 SAFE_DELETE(
-    T& x
-    )
+  T& x
+)
 {
-    if (x != NULL) {
-        delete x;
-        x = NULL;
-    }
+  if (x != NULL) {
+    delete x;
+    x = NULL;
+  }
 }
- 
+
 template<class T> inline void
 SAFE_RELEASE(
-    T& x
-    )
+  T& x
+)
 {
-    if (x != NULL) {
-        x->Release();
-        x = NULL;
-    }
+  if (x != NULL) {
+    x->Release();
+    x = NULL;
+  }
 }
- 
+
 template<class T> inline void
 SAFE_COFREE(
-    T& x
-    )
+  T& x
+)
 {
-    //
-    // CoTaskMemFree allows NULL arguments, so
-    // we don't need protection for this case.
-    //
-    CoTaskMemFree( x );
-    x = NULL;
+  //
+  // CoTaskMemFree allows NULL arguments, so
+  // we don't need protection for this case.
+  //
+  CoTaskMemFree(x);
+  x = NULL;
 }
- 
+
 inline void
 SAFE_FREESID(
-    PSID& x
-    )
+  PSID& x
+)
 {
-    if (x != NULL) {
-        FreeSid( x );
-        x = NULL;
-    }
+  if (x != NULL) {
+    FreeSid(x);
+    x = NULL;
+  }
 }
- 
+
 inline void
 SAFE_CLOSE(
-    HANDLE& x
-    )
+  HANDLE& x
+)
 {
-    if (x != INVALID_HANDLE_VALUE) {
-        CloseHandle( x );
-        x = INVALID_HANDLE_VALUE;
-    }
+  if (x != INVALID_HANDLE_VALUE) {
+    CloseHandle(x);
+    x = INVALID_HANDLE_VALUE;
+  }
 }
- 
+
 inline void
 THROW_ON_FAILED(
-    const char* /*strMessage*/,
-    HRESULT hr
-    )
+  const char* /*strMessage*/,
+  HRESULT hr
+)
 {
-    if (FAILED(hr)) {
-        throw hr;
-    }
+  if (FAILED(hr)) {
+    throw hr;
+  }
 }
- 
+
 class AutoLock {
- public:
-    AutoLock( CRITICAL_SECTION& cs ) : m_pLock( &cs ) {
-        EnterCriticalSection( m_pLock );
-    };
- 
-    ~AutoLock() {
-        Unlock();
-    };
- 
+public:
+  AutoLock(CRITICAL_SECTION& cs) : m_pLock(&cs) {
+    EnterCriticalSection(m_pLock);
+  };
+
+  ~AutoLock() {
+    Unlock();
+  };
+
 #pragma warning(suppress: 26135)
-    void Unlock() {
-        if (m_pLock != NULL) {
-            LeaveCriticalSection( m_pLock );
-            m_pLock = NULL;
-        }
-    };
-     
- private:
-    CRITICAL_SECTION* m_pLock;
+  void Unlock() {
+    if (m_pLock != NULL) {
+      LeaveCriticalSection(m_pLock);
+      m_pLock = NULL;
+    }
+  };
+
+private:
+  CRITICAL_SECTION* m_pLock;
 };
- 
+
 //
 // Utility functions
 //
- 
+
 LPSTR NewString(LPCSTR pszSource);
- 
+
 LPWSTR NewStringW(LPWSTR pwszSource);
- 
 
 HRESULT
 UnicodeToAnsi(
-    __in LPCWSTR pwszIn,
-    __out LPSTR&  pszOut
-    );
- 
+  __in LPCWSTR pwszIn,
+  __out LPSTR&  pszOut
+);
+
 HRESULT
 AnsiToUnicode(
-    __in LPCSTR pszIn,
-    __out LPWSTR& pwszOut
-    );
- 
+  __in LPCSTR pszIn,
+  __out LPWSTR& pwszOut
+);
+
 HRESULT
 AnsiToGuid(
-    LPCSTR szString,
-    GUID& guid
-    );
- 
+  LPCSTR szString,
+  GUID& guid
+);
+
 LPSTR
 GuidToAnsi(
-    GUID& guid
-    );
- 
+  GUID& guid
+);
+
 //
 // Tracing
 //
- 
+
 void
 TraceMsg(
-    LPCWSTR msg,
-    ...
-    );
- 
+  LPCWSTR msg,
+  ...
+);
+
 class FuncTrace {
- public:
-    FuncTrace(LPCWSTR function)
-     : m_function(function) {
-        TraceMsg(L"Entering: %s\n", m_function);
-    }
- 
-    ~FuncTrace() {
-        TraceMsg(L"Exiting: %s\n", m_function);
-    }
- 
- private:
-    LPCWSTR m_function;
+public:
+  FuncTrace(LPCWSTR function)
+    : m_function(function) {
+    TraceMsg(L"Entering: %s\n", m_function);
+  }
+
+  ~FuncTrace() {
+    TraceMsg(L"Exiting: %s\n", m_function);
+  }
+
+private:
+  LPCWSTR m_function;
 };
- 
+
 #define TRACE_FUNCTION() FuncTrace FuncTraceLocal(TEXT(__FUNCTION__))
- 
+
 void
 LogEvent(
-    LPCWSTR pFormat,
-    ...
-    );
+  LPCWSTR pFormat,
+  ...
+);

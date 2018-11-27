@@ -7,32 +7,32 @@
 //------------------------------------------------------------------------------
 
 typedef struct _PERFLOG_LOGGING_PARAMS {
-    GUID ControlGuid;
-    void (*OnStateChanged)(void);
-    ULONG NumberOfTraceGuids;
-    TRACE_GUID_REGISTRATION TraceGuids[ANYSIZE_ARRAY];
+  GUID ControlGuid;
+  void(*OnStateChanged)(void);
+  ULONG NumberOfTraceGuids;
+  TRACE_GUID_REGISTRATION TraceGuids[ANYSIZE_ARRAY];
 } PERFLOG_LOGGING_PARAMS, *PPERFLOG_LOGGING_PARAMS;
 
 BOOL
 PerflogInitIfEnabled(
-    IN HINSTANCE hInstance,
-    __in PPERFLOG_LOGGING_PARAMS LogParams
-    );
+  IN HINSTANCE hInstance,
+  __in PPERFLOG_LOGGING_PARAMS LogParams
+);
 
 BOOL
-PerflogInitialize (
-    __in PPERFLOG_LOGGING_PARAMS LogParams
-    );
+PerflogInitialize(
+  __in PPERFLOG_LOGGING_PARAMS LogParams
+);
 
 VOID
-PerflogShutdown (
-    VOID
-    );
+PerflogShutdown(
+  VOID
+);
 
 VOID
-PerflogTraceEvent (
-    __in PEVENT_TRACE_HEADER Event
-    );
+PerflogTraceEvent(
+  __in PEVENT_TRACE_HEADER Event
+);
 
 extern ULONG PerflogEnableFlags;
 extern UCHAR PerflogEnableLevel;
@@ -46,11 +46,11 @@ extern TRACEHANDLE PerflogRegHandle;
 
 VOID
 PerflogTraceEventLevel(
-    ULONG Level,
-    __in PEVENT_TRACE_HEADER Event
-    );
+  ULONG Level,
+  __in PEVENT_TRACE_HEADER Event
+);
 
 VOID
-PerflogTraceEvent (
-    __in PEVENT_TRACE_HEADER Event
-    );
+PerflogTraceEvent(
+  __in PEVENT_TRACE_HEADER Event
+);

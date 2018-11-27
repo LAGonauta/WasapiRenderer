@@ -6,7 +6,6 @@
 // Copyright (c) 1992-2001 Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
-
 /*
    The idea is to pepper the source code with interesting measurements and
    have the last few thousand of these recorded in a circular buffer that
@@ -146,74 +145,63 @@ Number      Average       StdDev     Smallest      Largest Incident_Name
 extern "C" {
 #endif
 
-// This must be called first - (called by the DllEntry)
+  // This must be called first - (called by the DllEntry)
 
-void WINAPI Msr_Init(void);
+  void WINAPI Msr_Init(void);
 
+  // Call this last to clean up (or just let it fall off the end - who cares?)
 
-// Call this last to clean up (or just let it fall off the end - who cares?)
+  void WINAPI Msr_Terminate(void);
 
-void WINAPI Msr_Terminate(void);
+  // Call this to get an Id for an "incident" that you can pass to Start, Stop or Note
+  // everything that's logged is called an "incident".
 
+  int  WINAPI Msr_Register(__in LPTSTR Incident);
 
-// Call this to get an Id for an "incident" that you can pass to Start, Stop or Note
-// everything that's logged is called an "incident".
+  // Reset the statistical counts for an incident
 
-int  WINAPI Msr_Register(__in LPTSTR Incident);
+  void WINAPI Msr_Reset(int Id);
 
-
-// Reset the statistical counts for an incident
-
-void WINAPI Msr_Reset(int Id);
-
-
-// Reset all the counts for all incidents
+  // Reset all the counts for all incidents
 #define MSR_RESET_ALL 0
 #define MSR_PAUSE 1
 #define MSR_RUN 2
 
-void WINAPI Msr_Control(int iAction);
+  void WINAPI Msr_Control(int iAction);
 
+  // log the start of an operation
 
-// log the start of an operation
+  void WINAPI Msr_Start(int Id);
 
-void WINAPI Msr_Start(int Id);
+  // log the end of an operation
 
+  void WINAPI Msr_Stop(int Id);
 
-// log the end of an operation
+  // log a one-off or repetitive operation
 
-void WINAPI Msr_Stop(int Id);
+  void WINAPI Msr_Note(int Id);
 
+  // log an integer (on which we can see statistics later)
+  void WINAPI Msr_Integer(int Id, int n);
 
-// log a one-off or repetitive operation
+  // print out all the vaialable log (it may have wrapped) and then the statistics.
+  // When the log wraps you lose log but the statistics are still complete.
+  // hFIle==NULL => use DbgLog
+  // otherwise hFile must have come from CreateFile or OpenFile.
 
-void WINAPI Msr_Note(int Id);
+  void WINAPI Msr_Dump(HANDLE hFile);
 
+  // just dump the statistics - never mind the log
 
-// log an integer (on which we can see statistics later)
-void WINAPI Msr_Integer(int Id, int n);
+  void WINAPI Msr_DumpStats(HANDLE hFile);
 
+  // Type definitions in case you want to declare a pointer to the dump functions
+  // (makes it a trifle easier to do dynamic linking
+  // i.e. LoadModule, GetProcAddress and call that)
 
-// print out all the vaialable log (it may have wrapped) and then the statistics.
-// When the log wraps you lose log but the statistics are still complete.
-// hFIle==NULL => use DbgLog
-// otherwise hFile must have come from CreateFile or OpenFile.
-
-void WINAPI Msr_Dump(HANDLE hFile);
-
-
-// just dump the statistics - never mind the log
-
-void WINAPI Msr_DumpStats(HANDLE hFile);
-
-// Type definitions in case you want to declare a pointer to the dump functions
-// (makes it a trifle easier to do dynamic linking
-// i.e. LoadModule, GetProcAddress and call that)
-
-// Typedefs so can declare MSR_DUMPPROC *MsrDumpStats; or whatever
-typedef void WINAPI MSR_DUMPPROC(HANDLE hFile);
-typedef void WINAPI MSR_CONTROLPROC(int iAction);
-
+  // Typedefs so can declare MSR_DUMPPROC *MsrDumpStats; or whatever
+  typedef void WINAPI MSR_DUMPPROC(HANDLE hFile);
+  typedef void WINAPI MSR_CONTROLPROC(int iAction);
 
 #ifdef __cplusplus
 }

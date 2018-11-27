@@ -6,5 +6,5 @@
 class WasapiHelper
 {
 public:
-	static LPWSTR GetDeviceID(IMMDeviceCollection *DeviceCollection, UINT DeviceIndex);
+  static LPWSTR GetDeviceID(IMMDeviceCollection *DeviceCollection, UINT DeviceIndex);
 };

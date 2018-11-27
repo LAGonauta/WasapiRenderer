@@ -6,7 +6,6 @@
 // Copyright (c) 1992-2001 Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
-
 #ifndef __STREAMS__
 #define __STREAMS__
 
@@ -25,7 +24,6 @@
 #endif
 #endif	// MSC_VER
 
-
 // Because of differences between Visual C++ and older Microsoft SDKs,
 // you may have defined _DEBUG without defining DEBUG.  This logic
 // ensures that both will be set if Visual C++ sets _DEBUG.
@@ -35,20 +33,18 @@
 #endif
 #endif
 
-
 #include <windows.h>
 #include <windowsx.h>
 #include <olectl.h>
 #include <ddraw.h>
 #include <mmsystem.h>
 
-
 #ifndef NUMELMS
 #if _WIN32_WINNT < 0x0600
-   #define NUMELMS(aa) (sizeof(aa)/sizeof((aa)[0]))
+#define NUMELMS(aa) (sizeof(aa)/sizeof((aa)[0]))
 #else
-   #define NUMELMS(aa) ARRAYSIZE(aa)
-#endif   
+#define NUMELMS(aa) ARRAYSIZE(aa)
+#endif
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
@@ -56,22 +52,22 @@
 // the applicaiton is being compiled with the headers from Visual C++ 6.0.
 /////////////////////////////////////////////////// ////////////////////////
 #ifndef InterlockedExchangePointer
-	#define InterlockedExchangePointer(Target, Value) \
+#define InterlockedExchangePointer(Target, Value) \
    (PVOID)InterlockedExchange((PLONG)(Target), (LONG)(Value))
 #endif
 
 #ifndef _WAVEFORMATEXTENSIBLE_
 #define _WAVEFORMATEXTENSIBLE_
 typedef struct {
-    WAVEFORMATEX    Format;
-    union {
-        WORD wValidBitsPerSample;       /* bits of precision  */
-        WORD wSamplesPerBlock;          /* valid if wBitsPerSample==0 */
-        WORD wReserved;                 /* If neither applies, set to zero. */
-    } Samples;
-    DWORD           dwChannelMask;      /* which channels are */
-                                        /* present in stream  */
-    GUID            SubFormat;
+  WAVEFORMATEX    Format;
+  union {
+    WORD wValidBitsPerSample;       /* bits of precision  */
+    WORD wSamplesPerBlock;          /* valid if wBitsPerSample==0 */
+    WORD wReserved;                 /* If neither applies, set to zero. */
+  } Samples;
+  DWORD           dwChannelMask;      /* which channels are */
+                                      /* present in stream  */
+  GUID            SubFormat;
 } WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE;
 #endif // !_WAVEFORMATEXTENSIBLE_
 
@@ -80,50 +76,49 @@ typedef struct {
 #endif // !defined(WAVE_FORMAT_EXTENSIBLE)
 
 #ifndef GetWindowLongPtr
-  #define GetWindowLongPtrA   GetWindowLongA
-  #define GetWindowLongPtrW   GetWindowLongW
-  #ifdef UNICODE
-    #define GetWindowLongPtr  GetWindowLongPtrW
-  #else
-    #define GetWindowLongPtr  GetWindowLongPtrA
-  #endif // !UNICODE
+#define GetWindowLongPtrA   GetWindowLongA
+#define GetWindowLongPtrW   GetWindowLongW
+#ifdef UNICODE
+#define GetWindowLongPtr  GetWindowLongPtrW
+#else
+#define GetWindowLongPtr  GetWindowLongPtrA
+#endif // !UNICODE
 #endif // !GetWindowLongPtr
 
 #ifndef SetWindowLongPtr
-  #define SetWindowLongPtrA   SetWindowLongA
-  #define SetWindowLongPtrW   SetWindowLongW
-  #ifdef UNICODE
-    #define SetWindowLongPtr  SetWindowLongPtrW
-  #else
-    #define SetWindowLongPtr  SetWindowLongPtrA
-  #endif // !UNICODE
+#define SetWindowLongPtrA   SetWindowLongA
+#define SetWindowLongPtrW   SetWindowLongW
+#ifdef UNICODE
+#define SetWindowLongPtr  SetWindowLongPtrW
+#else
+#define SetWindowLongPtr  SetWindowLongPtrA
+#endif // !UNICODE
 #endif // !SetWindowLongPtr
 
 #ifndef GWLP_WNDPROC
-  #define GWLP_WNDPROC        (-4)
+#define GWLP_WNDPROC        (-4)
 #endif
 #ifndef GWLP_HINSTANCE
-  #define GWLP_HINSTANCE      (-6)
+#define GWLP_HINSTANCE      (-6)
 #endif
 #ifndef GWLP_HWNDPARENT
-  #define GWLP_HWNDPARENT     (-8)
+#define GWLP_HWNDPARENT     (-8)
 #endif
 #ifndef GWLP_USERDATA
-  #define GWLP_USERDATA       (-21)
+#define GWLP_USERDATA       (-21)
 #endif
 #ifndef GWLP_ID
-  #define GWLP_ID             (-12)
+#define GWLP_ID             (-12)
 #endif
 #ifndef DWLP_MSGRESULT
-  #define DWLP_MSGRESULT  0
+#define DWLP_MSGRESULT  0
 #endif
-#ifndef DWLP_DLGPROC 
-  #define DWLP_DLGPROC    DWLP_MSGRESULT + sizeof(LRESULT)
+#ifndef DWLP_DLGPROC
+#define DWLP_DLGPROC    DWLP_MSGRESULT + sizeof(LRESULT)
 #endif
 #ifndef DWLP_USER
-  #define DWLP_USER       DWLP_DLGPROC + sizeof(DLGPROC)
+#define DWLP_USER       DWLP_DLGPROC + sizeof(DLGPROC)
 #endif
-
 
 #pragma warning(push)
 #pragma warning(disable: 4312 4244)
@@ -132,7 +127,7 @@ typedef struct {
 template <class T>
 T _GetWindowLongPtr(HWND hwnd, int nIndex)
 {
-    return (T)GetWindowLongPtr(hwnd, nIndex);
+  return (T)GetWindowLongPtr(hwnd, nIndex);
 }
 
 // _SetWindowLongPtr
@@ -140,14 +135,13 @@ T _GetWindowLongPtr(HWND hwnd, int nIndex)
 template <class T>
 LONG_PTR _SetWindowLongPtr(HWND hwnd, int nIndex, T p)
 {
-    return SetWindowLongPtr(hwnd, nIndex, (LONG_PTR)p);
+  return SetWindowLongPtr(hwnd, nIndex, (LONG_PTR)p);
 }
 #pragma warning(pop)
 
 ///////////////////////////////////////////////////////////////////////////
 // End Platform SDK definitions
 ///////////////////////////////////////////////////////////////////////////
-
 
 #include <strmif.h>     // Generated IDL header file for streams interfaces
 #include <intsafe.h>    // required by amvideo.h
@@ -192,11 +186,8 @@ LONG_PTR _SetWindowLongPtr(HWND hwnd, int nIndex, T p)
 #include <edevdefs.h>   // External device control interface defines
 #include <audevcod.h>   // audio filter device error event codes
 
-
-
 #else
-    #ifdef DEBUG
-    #pragma message("STREAMS.H included TWICE")
-    #endif
+#ifdef DEBUG
+#pragma message("STREAMS.H included TWICE")
+#endif
 #endif // __STREAMS__
-

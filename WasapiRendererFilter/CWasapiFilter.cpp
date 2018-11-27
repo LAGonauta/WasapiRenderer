@@ -40,96 +40,86 @@ const AMOVIESETUP_FILTER sudDump =
     &sudPins                    // Pin details
 };
 
-
 //
 //  Object creation stuff
 //
-CFactoryTemplate g_Templates[]= 
+CFactoryTemplate g_Templates[] =
 {
-	{ L"WasapiRendererFilter", &CLSID_WasapiRendererFilter, CWasapiFilterManager::CreateInstance, NULL, &sudDump },
-	{ L"Saturation Props", &CLSID_WasapiProp, CWasapiFilterProperties::CreateInstance, NULL, NULL }
+  { L"WasapiRendererFilter", &CLSID_WasapiRendererFilter, CWasapiFilterManager::CreateInstance, NULL, &sudDump },
+  { L"Saturation Props", &CLSID_WasapiProp, CWasapiFilterProperties::CreateInstance, NULL, NULL }
 };
-int g_cTemplates =sizeof(g_Templates)/sizeof(g_Templates[0]);
-
+int g_cTemplates = sizeof(g_Templates) / sizeof(g_Templates[0]);
 
 // Constructor
 
 CWasapiFilter::CWasapiFilter(CWasapiFilterManager *pDump,
-                         LPUNKNOWN pUnk,
-                         CCritSec *pLock,
-                         HRESULT *phr) :
-    CBaseFilter(NAME("CWasapiFilter"), pUnk, pLock, CLSID_WasapiRendererFilter),
-    m_pManager(pDump)
+  LPUNKNOWN pUnk,
+  CCritSec *pLock,
+  HRESULT *phr) :
+  CBaseFilter(NAME("CWasapiFilter"), pUnk, pLock, CLSID_WasapiRendererFilter),
+  m_pManager(pDump)
 {
-	HRESULT hr=S_OK;
+  HRESULT hr = S_OK;
 }
-
-
-
-
-
-
 
 //
 // GetPin
 //
 CBasePin * CWasapiFilter::GetPin(int n)
 {
-    if (n == 0) {
-        return m_pManager->m_pPin;
-    } else {
-        return NULL;
-    }
+  if (n == 0) {
+    return m_pManager->m_pPin;
+  }
+  else {
+    return NULL;
+  }
 }
-
 
 //
 // GetPinCount
 //
 int CWasapiFilter::GetPinCount()
 {
-    return 1;
+  return 1;
 }
-
 
 //
 // Stop
 //
 // Overriden to close the dump file
 //
-	bool bStarted=false;
+bool bStarted = false;
 STDMETHODIMP CWasapiFilter::Stop()
 {
-	bStarted=false;
- 	DebugPrintf(L"CWasapiFilter::Stop \n");
-    CAutoLock cObjectLock(m_pLock);
-	m_pManager->StopRendering(true,false);  
-	HRESULT hr=CBaseFilter::Stop();
-    return hr;
+  bStarted = false;
+  DebugPrintf(L"CWasapiFilter::Stop \n");
+  CAutoLock cObjectLock(m_pLock);
+  m_pManager->StopRendering(true, false);
+  HRESULT hr = CBaseFilter::Stop();
+  return hr;
 }
 
 FILTER_STATE CWasapiFilter::GetState()
 {
-	return m_State;
+  return m_State;
 }
 
 REFERENCE_TIME CWasapiFilter::GetStartTime()
 {
-	LONGLONG units=m_tStart.GetUnits();
-	return m_tStart.m_time;
+  LONGLONG units = m_tStart.GetUnits();
+  return m_tStart.m_time;
 }
 
 STDMETHODIMP CWasapiFilter::Pause()
 {
- 	DebugPrintf(L"CWasapiFilter::Pause \n");
-    CAutoLock cObjectLock(m_pLock);
-	HRESULT hr=CBaseFilter::Pause();
-	m_pManager->PauseRendering();
- 	DebugPrintf(L"CWasapiFilter::Pause returning\n");
-	bStarted=false;
-    return hr;
+  DebugPrintf(L"CWasapiFilter::Pause \n");
+  CAutoLock cObjectLock(m_pLock);
+  HRESULT hr = CBaseFilter::Pause();
+  m_pManager->PauseRendering();
+  DebugPrintf(L"CWasapiFilter::Pause returning\n");
+  bStarted = false;
+  return hr;
 }
-
 
 // Run
 //
@@ -138,10 +128,10 @@ STDMETHODIMP CWasapiFilter::Pause()
     // its presentation
 STDMETHODIMP CWasapiFilter::Run(REFERENCE_TIME tStart)
 {
-	bStarted=true;
- 	DebugPrintf(L"CWasapiFilter::Run \n");
-    CAutoLock cObjectLock(m_pLock);
-	HRESULT hr=CBaseFilter::Run(tStart);
-	m_pManager->StartRendering();
-    return hr;
+  bStarted = true;
+  DebugPrintf(L"CWasapiFilter::Run \n");
+  CAutoLock cObjectLock(m_pLock);
+  HRESULT hr = CBaseFilter::Run(tStart);
+  m_pManager->StartRendering();
+  return hr;
 }

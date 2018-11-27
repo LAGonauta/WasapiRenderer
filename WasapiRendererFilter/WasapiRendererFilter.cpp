@@ -6,7 +6,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 //
-// Exported entry points for registration and unregistration 
+// Exported entry points for registration and unregistration
 // (in this case they only call through to default implementations).
 //
 ////////////////////////////////////////////////////////////////////////
@@ -18,41 +18,36 @@
 //
 STDAPI DllRegisterServer()
 {
-    return AMovieDllRegisterServer2( TRUE );
-
+  return AMovieDllRegisterServer2(TRUE);
 } // DllRegisterServer
-
 
 //
 // DllUnregisterServer
 //
 STDAPI DllUnregisterServer()
 {
-    return AMovieDllRegisterServer2( FALSE );
-
+  return AMovieDllRegisterServer2(FALSE);
 } // DllUnregisterServer
-
 
 //
 // DllEntryPoint
 //
 extern "C" BOOL WINAPI DllEntryPoint(HINSTANCE, ULONG, LPVOID);
 
-BOOL APIENTRY DllMain(HANDLE hModule, 
-                      DWORD  dwReason, 
-                      LPVOID lpReserved)
+BOOL APIENTRY DllMain(HANDLE hModule,
+  DWORD  dwReason,
+  LPVOID lpReserved)
 {
-	return DllEntryPoint((HINSTANCE)(hModule), dwReason, lpReserved);
+  return DllEntryPoint((HINSTANCE)(hModule), dwReason, lpReserved);
 }
-
 
 void DebugPrintf(const wchar_t *str, ...)
 {
   wchar_t buf[2048];
 
   va_list ptr;
-  va_start(ptr,str);
-  vswprintf(buf,str,ptr);
+  va_start(ptr, str);
+  vswprintf(buf, str, ptr);
 
   OutputDebugString(buf);
 }

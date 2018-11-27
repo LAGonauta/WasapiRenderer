@@ -7,7 +7,6 @@
 // Copyright (c) 1992-2001 Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
-
 /*
 
 a. Derive your COM object from CUnknown
@@ -108,10 +107,10 @@ inheritance and some via nested classes
 // Filter Setup data structures no defined in axextend.idl
 
 typedef REGPINTYPES
-AMOVIESETUP_MEDIATYPE, * PAMOVIESETUP_MEDIATYPE, * FAR LPAMOVIESETUP_MEDIATYPE;
+AMOVIESETUP_MEDIATYPE, *PAMOVIESETUP_MEDIATYPE, *FAR LPAMOVIESETUP_MEDIATYPE;
 
 typedef REGFILTERPINS
-AMOVIESETUP_PIN, * PAMOVIESETUP_PIN, * FAR LPAMOVIESETUP_PIN;
+AMOVIESETUP_PIN, *PAMOVIESETUP_PIN, *FAR LPAMOVIESETUP_PIN;
 
 typedef struct _AMOVIESETUP_FILTER
 {
@@ -121,7 +120,7 @@ typedef struct _AMOVIESETUP_FILTER
   UINT       nPins;
   const AMOVIESETUP_PIN * lpPin;
 }
-AMOVIESETUP_FILTER, * PAMOVIESETUP_FILTER, * FAR LPAMOVIESETUP_FILTER;
+AMOVIESETUP_FILTER, *PAMOVIESETUP_FILTER, *FAR LPAMOVIESETUP_FILTER;
 
 /* The DLLENTRY module initialises the module handle on loading */
 
@@ -138,15 +137,14 @@ extern OSVERSIONINFO g_osInfo;     // Filled in by GetVersionEx
 #ifndef INONDELEGATINGUNKNOWN_DEFINED
 DECLARE_INTERFACE(INonDelegatingUnknown)
 {
-    STDMETHOD(NonDelegatingQueryInterface) (THIS_ REFIID, LPVOID *) PURE;
-    STDMETHOD_(ULONG, NonDelegatingAddRef)(THIS) PURE;
-    STDMETHOD_(ULONG, NonDelegatingRelease)(THIS) PURE;
+  STDMETHOD(NonDelegatingQueryInterface) (THIS_ REFIID, LPVOID *) PURE;
+  STDMETHOD_(ULONG, NonDelegatingAddRef)(THIS) PURE;
+  STDMETHOD_(ULONG, NonDelegatingRelease)(THIS) PURE;
 };
 #define INONDELEGATINGUNKNOWN_DEFINED
 #endif
 
 typedef INonDelegatingUnknown *PNDUNKNOWN;
-
 
 /* This is the base object class that supports active object counting. As
    part of the debug facilities we trace every time a C++ object is created
@@ -157,84 +155,81 @@ typedef INonDelegatingUnknown *PNDUNKNOWN;
 
 class CBaseObject
 {
-
 private:
 
-    // Disable the copy constructor and assignment by default so you will get
-    //   compiler errors instead of unexpected behaviour if you pass objects
-    //   by value or assign objects.
-    CBaseObject(const CBaseObject& objectSrc);          // no implementation
-    void operator=(const CBaseObject& objectSrc);       // no implementation
+  // Disable the copy constructor and assignment by default so you will get
+  //   compiler errors instead of unexpected behaviour if you pass objects
+  //   by value or assign objects.
+  CBaseObject(const CBaseObject& objectSrc);          // no implementation
+  void operator=(const CBaseObject& objectSrc);       // no implementation
 
 private:
-    static LONG m_cObjects;     /* Total number of objects active */
+  static LONG m_cObjects;     /* Total number of objects active */
 
 protected:
 #ifdef DEBUG
-    DWORD m_dwCookie;           /* Cookie identifying this object */
+  DWORD m_dwCookie;           /* Cookie identifying this object */
 #endif
-
 
 public:
 
-    /* These increment and decrement the number of active objects */
+  /* These increment and decrement the number of active objects */
 
-    CBaseObject(__in_opt LPCTSTR pName);
+  CBaseObject(__in_opt LPCTSTR pName);
 #ifdef UNICODE
-    CBaseObject(__in_opt LPCSTR pName);
+  CBaseObject(__in_opt LPCSTR pName);
 #endif
-    ~CBaseObject();
+  ~CBaseObject();
 
-    /* Call this to find if there are any CUnknown derived objects active */
+  /* Call this to find if there are any CUnknown derived objects active */
 
-    static LONG ObjectsActive() {
-        return m_cObjects;
-    };
+  static LONG ObjectsActive() {
+    return m_cObjects;
+  };
 };
-
 
 /* An object that supports one or more COM interfaces will be based on
    this class. It supports counting of total objects for DLLCanUnloadNow
    support, and an implementation of the core non delegating IUnknown */
 
 class AM_NOVTABLE CUnknown : public INonDelegatingUnknown,
-                 public CBaseObject
+  public CBaseObject
 {
 private:
-    const LPUNKNOWN m_pUnknown; /* Owner of this object */
+  const LPUNKNOWN m_pUnknown; /* Owner of this object */
 
 protected:                      /* So we can override NonDelegatingRelease() */
-    volatile LONG m_cRef;       /* Number of reference counts */
+  volatile LONG m_cRef;       /* Number of reference counts */
 
 public:
 
-    CUnknown(__in_opt LPCTSTR pName, __in_opt LPUNKNOWN pUnk);
-    virtual ~CUnknown() {};
+  CUnknown(__in_opt LPCTSTR pName, __in_opt LPUNKNOWN pUnk);
+  virtual ~CUnknown() {};
 
-    // This is redundant, just use the other constructor
-    //   as we never touch the HRESULT in this anyway
-    CUnknown(__in_opt LPCTSTR Name, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr);
+  // This is redundant, just use the other constructor
+  //   as we never touch the HRESULT in this anyway
+  CUnknown(__in_opt LPCTSTR Name, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr);
 #ifdef UNICODE
-    CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk);
-    CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk,__inout_opt HRESULT *phr);
+  CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk);
+  CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr);
 #endif
 
-    /* Return the owner of this object */
+  /* Return the owner of this object */
 
-    LPUNKNOWN GetOwner() const {
-        return m_pUnknown;
-    };
+  LPUNKNOWN GetOwner() const {
+    return m_pUnknown;
+  };
 
-    /* Called from the class factory to create a new instance, it is
-       pure virtual so it must be overriden in your derived class */
+  /* Called from the class factory to create a new instance, it is
+     pure virtual so it must be overriden in your derived class */
 
-    /* static CUnknown *CreateInstance(LPUNKNOWN, HRESULT *) */
+     /* static CUnknown *CreateInstance(LPUNKNOWN, HRESULT *) */
 
-    /* Non delegating unknown implementation */
+     /* Non delegating unknown implementation */
 
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID, __deref_out void **);
-    STDMETHODIMP_(ULONG) NonDelegatingAddRef();
-    STDMETHODIMP_(ULONG) NonDelegatingRelease();
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID, __deref_out void **);
+  STDMETHODIMP_(ULONG) NonDelegatingAddRef();
+  STDMETHODIMP_(ULONG) NonDelegatingRelease();
 };
 
 /* Return an interface pointer to a requesting client
@@ -258,25 +253,23 @@ typedef void (CALLBACK *LPFNInitRoutine)(BOOL bLoading, const CLSID *rclsid);
    the default class factory code can create new instances */
 
 class CFactoryTemplate {
-
 public:
 
-    const WCHAR *              m_Name;
-    const CLSID *              m_ClsID;
-    LPFNNewCOMObject           m_lpfnNew;
-    LPFNInitRoutine            m_lpfnInit;
-    const AMOVIESETUP_FILTER * m_pAMovieSetup_Filter;
+  const WCHAR *              m_Name;
+  const CLSID *              m_ClsID;
+  LPFNNewCOMObject           m_lpfnNew;
+  LPFNInitRoutine            m_lpfnInit;
+  const AMOVIESETUP_FILTER * m_pAMovieSetup_Filter;
 
-    BOOL IsClassID(REFCLSID rclsid) const {
-        return (IsEqualCLSID(*m_ClsID,rclsid));
-    };
+  BOOL IsClassID(REFCLSID rclsid) const {
+    return (IsEqualCLSID(*m_ClsID, rclsid));
+  };
 
-    CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr) const {
-        CheckPointer(phr,NULL);
-        return m_lpfnNew(pUnk, phr);
-    };
+  CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr) const {
+    CheckPointer(phr, NULL);
+    return m_lpfnNew(pUnk, phr);
+  };
 };
-
 
 /* You must override the (pure virtual) NonDelegatingQueryInterface to return
    interface pointers (using GetInterface) to the interfaces your derived
@@ -293,13 +286,6 @@ public:
         return GetOwner()->Release();                           \
     };
 
-
-
 HINSTANCE	LoadOLEAut32();
 
-
 #endif /* __COMBASE__ */
-
-
-
-
